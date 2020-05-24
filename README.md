@@ -2,6 +2,11 @@
 
 For this project, you need to create a Dockerfile, a Python dependencies file, and a docker-compose.yml file. (You can use either a .yml or .yaml extension for this file.)
 
+## Pre-requisites:
+
+Install Docker: https://docs.docker.com/engine/install/
+Install Docker-compose: https://docs.docker.com/compose/install/
+
 ## Create an empty project directory:
 
 	mkdir project_docker && cd project_docker
