@@ -44,37 +44,37 @@ For Windows -
 	version: '3'
 	services:
 		db:
-		    image: postgres
-		    restart: unless-stopped
-		    environment:
-		      - POSTGRES_DB=postgres
-		      - POSTGRES_USER=postgres
-		      - POSTGRES_PASSWORD=password
-		    volumes:
-		      - ./postgres-data:/var/lib/postgresql/data
-		    # links:
-		      # - "pgadmin"
+			image: postgres
+			restart: unless-stopped
+			environment:
+			  - POSTGRES_DB=postgres
+			  - POSTGRES_USER=postgres
+			  - POSTGRES_PASSWORD=password
+			volumes:
+			  - ./postgres-data:/var/lib/postgresql/data
+			# links:
+			  # - "pgadmin"
 		pgadmin:
-		    image: "dpage/pgadmin4"
-		    restart: unless-stopped
-		    depends_on:
-		      - db
-		    environment:
-		      PGADMIN_DEFAULT_EMAIL: "yoouremail@gmail.com"
-		      PGADMIN_DEFAULT_PASSWORD: "password"  //Same you given in above POSTGRES_PASSWORD//
-		      PGADMIN_LISTEN_PORT: 80
-		    ports: 
-		      - "5050:80"
+			image: "dpage/pgadmin4"
+			restart: unless-stopped
+			depends_on:
+			  - db
+			environment:
+			  PGADMIN_DEFAULT_EMAIL: "yoouremail@gmail.com"
+			  PGADMIN_DEFAULT_PASSWORD: "password"  //Same you given in above POSTGRES_PASSWORD//
+			  PGADMIN_LISTEN_PORT: 80
+			ports: 
+			  - "5050:80"
 		web:
-		    build: .
-		    command: python manage.py runserver 0.0.0.0:8000
-		    restart: unless-stopped
-		    volumes:
-		      - .:/code
-		    ports: 
-		      - "8000:8000"
-		    depends_on:
-		      - db
+			build: .
+			command: python manage.py runserver 0.0.0.0:8000
+			restart: unless-stopped
+			volumes:
+			  - .:/code
+			ports: 
+			  - "8000:8000"
+			depends_on:
+			  - db
 	volumes: 
 		postgres-data:
 
@@ -95,14 +95,14 @@ Replace the DATABASES = ... with the following:
 
 		# setting.py   
 		DATABASES = {
-		    'default': {
-		        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-		        'NAME': 'postgres',  //Name you given in docker-compose.yml//
-		        'USER': 'postgres',  //Username you given in docker-compose.yml//
-		        'PASSWORD': 'postgres',  //Password you given in docker-compose.yml//
-		        'HOST': 'db',  
-		        'PORT': 5432,
-		    }
+			'default': {
+				'ENGINE': 'django.db.backends.postgresql_psycopg2',
+				'NAME': 'postgres',  //Name you given in docker-compose.yml//
+				'USER': 'postgres',  //Username you given in docker-compose.yml//
+				'PASSWORD': 'postgres',  //Password you given in docker-compose.yml//
+				'HOST': 'db',  
+				'PORT': 5432,
+			}
 		}
 
 ## Run the docker-compose up command from the top level directory for your project:
@@ -120,3 +120,53 @@ Replace the DATABASES = ... with the following:
 
 To check the Django app, go to **localhost:8000** on your browser.
 And to see the PGAdmin page, go to **localhost:5050** and login using your email and password you given in *pgadmin* service in *docker-compose.yml*.
+
+## Connecting Elasticsearch with Django:
+
+Edit the **docker-compose.yml** file:
+
+		version: '3'
+		services:
+		  db:
+			image: postgres
+			restart: unless-stopped
+			environment:
+			  - POSTGRES_DB=postgres
+			  - POSTGRES_USER=parth
+			  - POSTGRES_PASSWORD=redhat
+			volumes:
+			  - ./postgres-data:/var/lib/postgresql/data
+			# links:
+			  # - "pgadmin"
+		  pgadmin:
+			image: "dpage/pgadmin4"
+			restart: unless-stopped
+			depends_on:
+			  - db
+			environment:
+			  PGADMIN_DEFAULT_EMAIL: "cenachamp1998@gmail.com"
+			  PGADMIN_DEFAULT_PASSWORD: "redhat"
+			  PGADMIN_LISTEN_PORT: 80
+			ports: 
+			  - "5050:80"
+		  web:
+			build: .
+			command: python manage.py runserver 0.0.0.0:8000
+			restart: unless-stopped
+			volumes:
+			  - .:/code
+			ports: 
+			  - "8000:8000"
+			depends_on:
+			  - db
+			  - elasticsearch
+		  elasticsearch:
+			image: launcher.gcr.io/google/elasticsearch2
+			ports:
+			  - "9200:9200"
+			volumes:
+			  - esdata:/usr/share/elasticsearch/data
+		volumes: 
+		  postgres-data:
+		  esdata:
+			driver: local
