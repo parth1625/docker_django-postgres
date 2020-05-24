@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=parth
+      - POSTGRES_PASSWORD=redhat
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    # links:
+      # - "pgadmin"
+
+  pgadmin:
+    image: "dpage/pgadmin4"
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "cenachamp1998@gmail.com"
+      PGADMIN_DEFAULT_PASSWORD: "redhat"
+      PGADMIN_LISTEN_PORT: 80
+    ports: 
+      - "5050:80"
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    restart: unless-stopped
+    volumes:
+      - .:/code
+    ports: 
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes: 
+  postgres-data:
